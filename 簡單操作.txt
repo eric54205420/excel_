@@ -29,7 +29,7 @@
 <ctrl> + <`>		[切換公式顯示]
 <ctrl> + <F3>		[名稱管理員]
 <ctrl> + <shift> + <F3>	[由欄名 / 列名 建立名稱]
-<ctrl> + <g> / <F5>		[快速定位]
+<ctrl> + <g> / <F5>	[快速定位]
 <ctrl> + <L>		[建立表單]
 <ctrl> + <+>		[新增一列 / 欄]
 <ctrl> + <alt> + <v>	[選擇性貼上]
@@ -60,4 +60,13 @@
 #單元格引用
 同工作簿 同工作表		=A1
 同工作簿 異工作表		=Sheet2!A1
-異工作簿 		='C:\working\[1.xls]Sheet1'!$A$1	
+異工作簿 			='C:\working\[1.xls]Sheet1'!$A$1
+
+
+#最好定義為工作簿級名稱的公式
+
+該列頭			ROW_HEAD 	"=INDIRECT( "A" & ROW () )"
+該欄頭			COLUMN_HEAD	"=INDIRECT( CHAR( COLUMN () + 64 ) & 1 )"
+該列左邊一位		ROW_NEARBY	"=INDIRECT( CHAR( COLUMN () + 64 - 1) & ROW () )"
+該欄左邊一位		COLUMN_NEARBY	"=INDIRECT( CHAR( COLUMN () + 64 ) & ( ROW () - 1) )"
+
