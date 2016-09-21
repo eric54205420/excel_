@@ -5,6 +5,8 @@
 <ctrl> + <shift> + <right>
 <ctrl> + <shift> + <down>
 <ctrl> + <shift> + <*>
+<ctrl> + <home>
+<ctrl> + <end>
 <ctrl> + <pgUp>
 <ctrl> + <pgDn>
 
@@ -20,6 +22,8 @@
 
 <ctrl> + <1>		[儲存格格式]
 <ctrl> + <b>		[字體加粗]
+<ctrl> + <I>		[斜體]
+<ctrl> + <u>		[底線]
 <ctrl> + <d>		[公式向下填充]
 <ctrl> + <r>		[公式向右填充]
 <ctrl> + <`>		[切換公式顯示]
@@ -34,6 +38,8 @@
 <shift> + <F8>		[多欄選取暫存]
 <alt> + <enter>		[插入多行]
 <alt> + <F1> / <F11> 	[快速製圖表]
+<alt> + <F8>		[巨集選單]
+<alt> + <down>		[下拉清單]
 <F3>			[快速貼上名稱]
 <F4>			[重複上一步操作]
 <F9>			[公式轉換為值]
