@@ -1,0 +1,27 @@
+public lastrow as integer
+public lastcol as integer
+
+Sub get_Last_Row_And_Col()
+    
+    lastrow = Cells(Rows.Count, ActiveCell.Column).End(xlUp).Row
+    lastcol = Cells(ActiveCell.Row, Columns.Count).End(xlToLeft).Column
+    MsgBox lastrow & " " & lastcol
+End Sub
+ 
+
+Sub auto_Fill_row_dir()
+    Dim rng_row_direction As Range
+    'Dim rng_col_direction As Range
+   
+   ' 參考左邊欄 得到應填充列數
+    lastrow = Cells(Rows.Count, ActiveCell.Column - 1).End(xlUp).Row
+    'lastcol = Cells(ActiveCell.Row - 1, Columns.Count).End(xlToLeft).Column
+    
+    ' 選取當前儲存格至該欄欄尾
+     Set rng_row_direction = Range(ActiveCell, Cells(lastrow, ActiveCell.Column))
+     'Set rng_col_direction = Range(Cells(ActiveCell.Row, lastcol), ActiveCell)
+
+    ActiveCell.AutoFill Destination:=rng_row_direction
+    ActiveCell.AutoFill Destination:=rng_col_direction
+
+End Sub
