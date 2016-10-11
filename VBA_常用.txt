@@ -53,3 +53,29 @@ Sub color_change()
     'Range("A1").Interior.Color = QBColor(color_index)       ' 0 ~ 15
     'Range("A1").Interior.Color = RGB(color_index, color_index, color_index) ' 0 ~ 255
 End Sub
+
+Sub content_test()
+
+    On Error Resume Next
+
+    Dim Empty_or_not As Boolean
+    Dim Number_or_not As Boolean
+    Dim String_or_not As Boolean
+    Dim Date_or_not As Boolean
+    Dim Error_or_not As Boolean
+    
+    Empty_or_not = VBA.IsEmpty([ a1 ].Value)
+    Number_or_not = VBA.IsNumeric([ a1 ].Value) And [ a1] <> ""
+    String_or_not = VBA.TypeName([ a1 ].Value) = "String"
+    Date_or_not = VBA.IsDate([a1].Value)
+    Error_or_not = VBA.IsError([a1].Value)
+
+    
+    Debug.Print _
+            "Is empty: " & Empty_or_not & Chr(10) & _
+            "Is Number: " & Number_or_not & Chr(10) & _
+            "Is String: " & String_or_not & Chr(10) & _
+            "Is Date: " & Date_or_not & Chr(10) & _
+            "Is Error: " & Error_or_not & Chr(10)
+            
+End Sub
