@@ -25,3 +25,19 @@ Sub auto_Fill_row_dir()
     ActiveCell.AutoFill Destination:=rng_col_direction
 
 End Sub
+
+Sub grab_data_except_title()
+
+Dim curr_rows As Integer
+Dim curr_cols As Integer
+Dim current As Range
+
+Set current = activecell.CurrentRegion
+
+curr_rows = current.Rows.Count
+curr_cols = current.Columns.Count
+
+
+current.Resize(curr_rows - 1, curr_cols).Offset(1, 0).Select
+
+End Sub
