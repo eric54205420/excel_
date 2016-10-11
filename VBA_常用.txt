@@ -79,3 +79,25 @@ Sub content_test()
             "Is Error: " & Error_or_not & Chr(10)
             
 End Sub
+
+Sub find_contents()
+
+	' 於某欄中查找某值 第一 / 最後一 次出現位置
+    
+    Dim first_occur As Integer
+    Dim last_occur As Integer
+    Dim icount As Integer
+
+    ' find [b1] in column A
+    icount = Application.WorksheetFunction.CountIf(Sheets("test").[a:a], [b1])
+
+    If icount > 0 Then
+    
+        first_occur = Sheets("test").[a:a].Find([b1], lookat:=xlWhole).Row
+        last_occur = Sheets("test").[a:a].Find([b1], searchdirection:=xlPrevious).Row
+        
+        MsgBox "First occur: " & first_occur & " row" & Chr(10) & _
+                      "Last occur: " & last_occur & " row"
+    End If
+
+End Sub
