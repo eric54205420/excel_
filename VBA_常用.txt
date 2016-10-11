@@ -41,3 +41,15 @@ curr_cols = current.Columns.Count
 current.Resize(curr_rows - 1, curr_cols).Offset(1, 0).Select
 
 End Sub
+
+
+Sub color_change()
+    
+    Dim color_index As Integer
+    
+    color_index = 10
+    
+    Range("A1").Interior.ColorIndex = color_index
+    'Range("A1").Interior.Color = QBColor(color_index)       ' 0 ~ 15
+    'Range("A1").Interior.Color = RGB(color_index, color_index, color_index) ' 0 ~ 255
+End Sub
