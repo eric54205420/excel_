@@ -101,3 +101,61 @@ Sub find_contents()
     End If
 
 End Sub
+
+Sub grab_and_store_data_to_array()
+
+    Dim arr
+    Dim iter
+    Dim row_bound As Integer
+    Dim col_bound As Integer
+    Dim grab_rng As Range
+
+    ' constant array
+    ' arr = Array("hello", "excel", "arr", "test")
+    
+'  For Each iter In arr
+'  Debug.Print iter
+'  Next iter
+'  Stop
+
+' grab data from range
+' arr = Range("A1:C4")
+    
+' For Each iter In arr
+' Debug.Print iter
+' Next iter
+
+' Stop
+    
+      Set grab_rng = Range("A1:C4")
+      row_bound = grab_rng.Rows.Count
+      col_bound = grab_rng.Columns.Count
+
+      ReDim arr(1 To row_bound, 1 To col_bound)
+      redim iter ( 1 To row_bound )
+      arr = grab_rng
+      iter = arr(1)
+            
+      ' row and col lower / upper bound
+      ' LBound ( grab_rng , 1 ) UBound ( grab_rng , 1 ) 
+      ' LBound ( grab_rng , 2 ) UBound ( grab_rng, 2 )
+
+      Stop
+
+End Sub
+
+
+Sub slice_array()
+
+	Dim arr
+	Dim arr2
+
+	' slice array way I
+	arr2 = Range("a1").CurrentRegion
+	arr = Range("A1").CurrentRegion.Rows(1)
+
+	' slice array way II
+	arr = Application.Index(arr2, 2, 0)
+	Stop
+
+End Sub
