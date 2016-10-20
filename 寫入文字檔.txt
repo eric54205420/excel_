@@ -1,0 +1,221 @@
+這裡先呈現我們的資料，總共兩列，範圍為D2:K3。
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706511354331ce1c80fb_resize_600.png
+
+一、使用 Open 陳述式，配合Print寫入資料
+
+Sub Day15_1()
+    Sheets("Day15").Select
+    Dim Rng As Object
+    Dim strData
+    
+    '使用 Open 陳述式，配合Print寫入資料
+    '資料相連接的功能不是很完整，數字會補上左右邊空白
+    
+    Open "D:\Day15_1.txt" For Output As #1
+    
+    For Each Rng In Range("D2:K3")
+        If Rng.Column = 4 Then
+            Print #1, Rng, '兩欄位用空白隔開
+        ElseIf Rng.Column = 11 Then
+            Print #1, Rng   '自動換列
+        Else
+            Print #1, Rng;  '資料會相連接
+        End If
+    Next
+    Close #1
+End Sub
+
+產生資料如下圖：
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706531254331d58b0bcd_resize_600.png
+
+使用 Print輸出資料時，其實有蠻多選項可用，例如後綴「,」可用空白隔開，
+使用「;」可連接資料，
+使用空白，則會自動換，
+但是其實問題很多，例如連接資料方面，遇到數字它會自動於數字前後加上空白字元；
+空白隔開，則不知道為何會用到11個空格。
+
+改寫的方法如下：
+
+Sub Day15_1_FIX()
+    Sheets("Day15").Select
+    Dim Rng As Object
+    Dim strData
+    
+    '使用 Open 陳述式，配合Print寫入資料
+    '使用&連接自訂的「相隔符號」，取代內建的功能
+    
+    Open "D:\Day15_1_FIX.txt" For Output As #1
+    
+    For Each Rng In Range("D2:K3")
+        If Rng.Column = 4 Then
+            Print #1, Rng & vbTab;     '兩欄位用Tab隔開
+        ElseIf Rng.Column = 11 Then
+            Print #1, Rng & "" & vbCrLf;   '自動換列
+        Else
+            Print #1, Rng & "";   '資料會相連接
+        End If
+    Next
+    Close #1
+End Sub
+
+產生資料如下圖：(圖被LOGO擋住..英文字的部份跟前張圖一樣)
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706540854331d90e5c2d_resize_600.png
+
+這樣改寫後，輸出的格式就比較能依照自己的意思產生。
+空白隔開的部份，也以上面方式改為Tab字元隔開，將會比較好呈現資料。
+
+二、使用 Open 陳述式，預寫資料至文字變數，再配合Print寫入資料
+
+另外一種寫法，是先將字串變數整個湊齊了，再Print到文字檔中，整個邏輯性會更強些：
+
+Sub Day15_2()
+    Sheets("Day15").Select
+    Dim Rng As Object
+    Dim strData As String
+    
+    For Each Rng In Range("D2:K3")
+        If Rng.Column = 4 Then
+            strData = strData & Rng & vbTab
+        ElseIf Rng.Column = 11 Then
+            strData = strData & Rng & vbCrLf
+        Else
+            strData = strData & Rng
+        End If
+    Next
+    Debug.Print strData
+    
+    Open "D:\Day15_2.txt" For Output As #1
+    Print #1, strData
+    Close #1
+End Sub
+
+產生資料就跟上個程式產生出來的相同。
+
+三、使用 Open 陳述式，配合Write寫入資料
+
+另外一個使用Open陳述式開啟後，寫入資料的方式為Write，讓我們來看看寫法以及呈現資料為何：
+
+Sub Day15_3_1()
+    Sheets("Day15").Select
+    Dim Rng As Object
+    Dim strData
+    
+    Open "D:\Day15_3_1.txt" For Output As #1
+    
+    For Each Rng In Range("D2:K3")
+        If Rng.Column = 4 Then
+            Write #1, Rng,  '塞入空白，沒效，會出現逗點
+        ElseIf Rng.Column = 11 Then
+            Write #1, Rng   '換行，可以
+        Else
+            Write #1, Rng;  '連接，沒效，會出現逗點分隔
+        End If
+    Next
+
+    Close #1
+
+End Sub
+
+可以看到全部的資料，都會有雙引號包住，然後以逗號作為分隔。
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706561954331e134a7b8_resize_600.png
+
+
+若先執行迴圈產生要寫入的字串後，再寫入文字檔，寫法如下：
+
+Sub Day15_3_2 ()
+    Sheets("Day15").Select
+    Dim Rng As Object
+    Dim strData As String
+    
+    For Each Rng In Range("D2:K3")
+        If Rng.Column = 4 Then
+            strData = strData & Rng & vbTab
+        ElseIf Rng.Column = 11 Then
+            strData = strData & Rng & vbCrLf
+        Else
+            strData = strData & Rng
+        End If
+    Next
+    Debug.Print strData
+    
+    Open "D:\ Day15_3_2.txt" For Output As #1
+    Write #1, strData
+    Close #1
+End Sub
+
+但產生出來的資料，會變成字串前後被加上雙引號包住。
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706565254331e3447d95_resize_600.png
+
+
+因此，這會是輸出成CSV檔較佳的用法，不用自己用雙引號與逗號，程式會自己帶上。
+
+四、寫入UTF8文字檔
+
+另外，還有個常見的需求，若輸出的文字檔，需要使用UTF8儲存，預設的VBA指令並沒有辦法執行，
+需要透過ADODB.Stream子集來處理UTF8儲存事宜。
+
+我們這先弄一個範本:
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706572454331e54d8c91_resize_600.png
+
+主要內容如圖
+
+Sub Day15_4_1()
+    '多國語言文字寫入ASCII格式的文字檔
+    Sheets("Day15").Select
+    Dim Rng As Object
+    Dim strData
+    
+    For Each Rng In Range("A1:B6")
+        If Rng.Column = 1 Then
+            strData = strData & Rng & vbTab
+        ElseIf Rng.Column = 2 Then
+            strData = strData & Rng & vbCrLf
+        End If
+    Next
+    Debug.Print strData
+    
+    Open "D:\Day15_4_1.txt" For Output As #1
+    Print #1, strData
+    Close #1
+End Sub
+
+產生文字檔後，開啟會出現許多亂碼。
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706580254331e7a36869_resize_600.png
+
+
+Sub Day15_4_2()
+    '多國語言文字寫入UTF8格式的文字檔
+    Sheets("Day15").Select
+    Dim Rng As Object
+    Dim strData
+    
+    For Each Rng In Range("A1:B6")
+        If Rng.Column = 1 Then
+            strData = strData & Rng & vbTab
+        ElseIf Rng.Column = 2 Then
+            strData = strData & Rng & vbCr
+        End If
+    Next
+    Debug.Print strData
+    
+    Dim fsT As Object
+    Set fsT = CreateObject("ADODB.Stream")
+    fsT.Type = 2 '指定類型，儲存文字資料使用2
+    fsT.Charset = "UTF-8" '指定字元集為UTF8
+    fsT.Open '開啟與寫入二進位資料到物件
+    fsT.WriteText strData
+    fsT.SaveToFile "D:\Day15_4_2.txt", 2 '寫入二進位資料到磁碟
+End Sub
+
+http://ithelp.ithome.com.tw/upload/images/20141007/2014100706583254331e981f2f9_resize_600.png
+
+以這方式寫入後，多國語言的資料，就可以正常被保存，
+但這種方式就沒有使用Open 陳述式配合Print與Write的特異功能。
+
