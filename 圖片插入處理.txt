@@ -1,0 +1,126 @@
+今天的單元，要來介紹Excel的插入圖片功能，
+我們會介紹要怎麼用VBA批次插入圖片，以及怎樣才可滑鼠移到縮圖處可秀出放大圖
+還有，若有整理大頭照的需求，有套免費軟體介紹給您，透過它，可以整批匯出「大頭照」檔案
+
+
+我們先重來源講起好了，首先先講怎麼製作「大頭照」圖片檔，這裡我們用的是Google的Picasa軟體，
+Picasa在3.0之後多了「臉部辨識功能」，
+能夠將照片裡的人臉標記起來，透過此功能，即可匯出「大頭照」。
+
+在測試中我發現，若之前沒裝過3.8的最初版本，直接安裝3.9最新版，匯出大頭照的功能會失敗，
+變成匯出整張照片，而不是大頭。
+
+我嘗試移除3.9，然後安裝回3.8第一版，然後再自動更新成3.9後，則可正常匯出，
+若有遇到此問題的，可以試著這樣解決。
+
+Picasa官方網站：http://picasa.google.com/
+
+3.8版下載點：http://www.oldversion.com/windows/picasa-3-8
+
+設定好要掃描的資料夾後，記得開啟「臉孔辨識功能」，
+詳細的操作方式，請參考上述的Picasa網站。
+
+以下教學，我採用3.8版的抓圖，若使用 3.9的，位置不會差太多，稍微注意一下即可。
+
+例如我們有以下照片：
+
+切換到「人物」區域，「未命名」的資料夾，此處會列出所有掃描出的大頭照
+
+點選右上角的「展開群組」後，照片才會全部顯示，否則會依照Picasa自己判斷的把同樣的人放在一起。
+
+再大頭照處滑鼠左鍵點一下，然後按Ctrl+A全選所有照片。
+
+按下螢幕下方中間處的「匯出」按鈕後，會帶出「匯出到資料夾」設定，
+可修改匯出路徑，我習慣用空白，這樣會直接放在「匯出」資料夾中，
+圖像大小設定到250即可，若有需要再依照自己需求調整。
+
+之後，會產生一個Exports分類與「匯出」資料夾，點選後會看到大頭照。
+
+然後，按下Ctrl+Enter即可開啟「匯出」資料夾。
+
+「大頭照」準備完成後，接下來準備Excel檔案，假如我的Excel檔資料如下：
+
+A欄放置的是編號，其餘欄位空白
+
+VBA內容增加以下兩個程式，分別匯入大頭照到「儲存格」與「儲存格註解」中。
+
+Sub InsertFace2Cell()
+'匯入大頭照到C欄，並依照A欄為檔名
+Dim strFacePath As String
+strFacePath = ActiveWorkbook.Path & "\27\face\"
+
+For iNum = 2 To Range("A65535").End(xlUp).Row
+    Range("C" & iNum).Select
+    ActiveSheet.Pictures.Insert(strFacePath & Range("A" & iNum) & ".jpg").Select
+    Selection.ShapeRange.Width = 75
+    Columns("C:C").ColumnWidth = 11.88
+    Rows(iNum & ":" & iNum).RowHeight = Selection.ShapeRange.Height
+Next iNum
+
+End Sub
+
+
+
+
+
+
+Sub InsertFace2Comment()
+'匯入大頭照到C欄註解內，並依照A欄為檔名
+'參閱：www.contextures.com\xlcomments03.html
+
+Dim rngList As Range
+Dim c As Range
+Dim cmt As Comment
+Dim strFacePath As String
+
+strFacePath = ActiveWorkbook.Path & "\27\face\"
+    
+On Error Resume Next
+
+'設定檔名放置位置
+Set rngList = Range("A2:A" & Range("A65536").End(xlUp).Row)
+
+For Each c In rngList
+  With c.Offset(0, 2)
+    Set cmt = c.Comment
+    If cmt Is Nothing And Len(Dir(strFacePath & c.Value & ".jpg")) > 0 Then
+      Set cmt = .AddComment
+    End If
+    '插入圖片至註解內，並設定註解長寬
+    With cmt
+      .Text Text:=""
+      .Shape.Fill.UserPicture strFacePath & c.Value & ".jpg"
+      .Visible = False
+      .Shape.TextFrame.AutoSize = True
+      .Shape.Width = 208
+      .Shape.Height = 250
+    End With
+  End With
+Next c
+
+'設定欄位寬度
+Columns("B:B").ColumnWidth = 1.5
+Columns("C:C").ColumnWidth = 14
+
+End Sub
+
+strFacePath變數的路徑可以依照現狀修改。
+註解長寬我依照轉出的圖片大小而定，上述曾經提到轉出大小我設定是250，若有修改者，這裡也要跟著改。
+
+然後將剛剛轉出的大頭照修改檔名，
+改為1～8，以便能讓VBA能夠依照A欄匯入Excel中使用。
+
+依序執行 InsertFace2Cell 與 InsertFace2Comment 程式，
+匯入完成後，Excel工作表會呈現這樣的畫面，此時，只要將滑鼠移到小張大頭照的右側空白處，即可帶出「註解」，
+
+因為大張大頭照插在註解中，即可像是放大顯示一般，
+將小圖放大，以此方式即可取代大頭照放大功能。
+
+上面提到兩個程式可以依照自己需求修改，以便符合實際需求。
+
+插入後的圖片已夾在Excel檔案內，原始的圖片刪除也不會有影響。
+
+插入工作表的照片與插入註解的照片均為同一個檔案，存檔時，只會佔一個檔案的儲存空間。
+
+
+http://ithelp.ithome.com.tw/articles/10160556
