@@ -1,0 +1,72 @@
+Public Function Similarity(str1 As String, str2 As String)
+'比較兩字串相似度
+
+    Dim ldint As Integer
+    ldint = ld(str1, str2)
+    Dim strlen As Integer
+    If (Len(str1) >= Len(str2)) Then
+        strlen = Len(str1)
+    Else
+        strlen = Len(str2)
+    End If
+    Similarity = 1 - ldint / strlen
+End Function
+
+
+
+
+
+
+Private Function min(one As Integer, two As Integer, three As Integer)
+    min = one
+    If (two < min) Then
+     min = two
+    End If
+    If (three < min) Then
+     min = three
+    End If
+End Function
+
+
+
+
+
+
+Private Function ld(str1 As String, str2 As String)
+Dim n, m, i, j As Integer
+Dim ch1, ch2 As String
+    n = Len(str1)
+    m = Len(str2)
+    Dim temp As Integer
+    If (n = 0) Then
+        ld = m
+    End If
+    If (m = 0) Then
+        ld = n
+    End If
+Dim d As Variant
+ReDim d(n + 1, m + 1) As Variant
+    For i = 0 To n
+        d(i, 0) = i
+    Next i
+    For j = 0 To m
+        d(0, j) = j
+    Next j
+    For i = 1 To n
+        ch1 = Mid(str1, i, 1)
+        For j = 1 To m
+            ch2 = Mid(str2, j, 1)
+            If (ch1 = ch2) Then
+            temp = 0
+            Else
+                temp = 1
+            End If
+            d(i, j) = min(d(i - 1, j) + 1, d(i, j - 1) + 1, d(i - 1, j - 1) + temp)
+        Next j
+    Next i
+    ld = d(n, m)
+End Function
+
+' Levenshtein distance：http://en.wikipedia.org/wiki/Levenshtein_distance
+
+' 中文：http://zh.wikipedia.org/wiki/編輯距離
