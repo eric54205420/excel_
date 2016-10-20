@@ -1,0 +1,56 @@
+VBA可透過DataObject來進行存取，
+以下利用幾個程式來介紹要如何撰寫。
+
+例如我的工作表裡面的內容如下圖：
+
+工作表我已框選A1:B4的範圍，並複製起來
+
+此時，執行以下程式：
+
+Sub Day22_取得剪貼簿內容()
+    Dim data As New DataObject
+    Dim strData  As String
+
+    data.GetFromClipboard
+    strData = data.GetText(1)
+
+    Debug.Print strData
+End Sub
+
+此程式收集了剪貼簿的內容後，貼到即時運算視窗內，在該視窗將會呈現：
+
+第二個程式，資料如同第一個程式，但為收集A2:A4範圍內的資料，然後寫入剪貼簿中，
+再用PasteSpecial方法貼到除存格中。
+
+Sub Day22_寫入剪貼簿()
+    Dim data As New DataObject
+    Dim strData As String
+    
+    For Each Rng In Range("A2:B4")
+        strData = strData & Rng
+    Next
+    
+    data.SetText strData '寫入DataObject
+    data.PutInClipboard  '寫入剪貼簿
+    
+    '同Range("D1").PasteSpecial xlPasteAll
+    [D1].PasteSpecial xlPasteAll
+End Sub
+
+這裡要提到的是，[D1]這樣的寫法，看起來更簡單，寫起來也方便，但我不是很推薦，
+若你寫的程式需要再多國語言狀態下使用，有些語系的似乎是不支援，但如果都在同樣語系下使用，就沒什麼差別。
+
+以下為呈現出來的結果：
+
+以下是透過SetText方法塞入空值，達到清除剪貼簿的目的。
+
+Sub Day22_清除剪貼簿內容()
+    Dim data As New DataObject
+    Set data = New DataObject
+    data.SetText ""
+    data.PutInClipboard
+End Sub
+
+若你有大量資料需要重別處複製過來，但須加工後才能使用，那可以試著用這方法，
+將剪貼簿內容取出後，透過程式處理完，再貼到特定位置，達到更有效率的目的
+
