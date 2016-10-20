@@ -1,0 +1,84 @@
+利用Excel內建的shell函數，其實可以直接呼叫外部程式，
+可以執行批次檔、VBS、執行檔等，但是內建的實在有點虛，還是呼叫外部的會好一些，以下先列出子程式：
+
+Function RunCmd(strCMD As String, _ 
+                Optional waitOnReturn As Boolean = True, _ 
+                Optional windowStyle As Integer = 1)
+    
+    '若無法執行，須引用 "Windows Script Host Object Model"
+    ' (工具 > 設定引用項目 >勾選)
+    ' 使用 WScript.Shell 方式
+    ' 參數：
+    ' strCMD 執行字串
+    ' windowStyle 視窗樣式，1為顯示 0不顯示
+    ' waitOnReturn 是否等待返回
+    
+    Dim wsh As Object
+    Set wsh = VBA.CreateObject("WScript.Shell")
+    Dim errorCode As Integer
+    On Error GoTo ErrZone
+    errorCode = wsh.Run(strCMD, windowStyle, waitOnReturn)
+
+    If errorCode = 0 Then
+ '       MsgBox "OK!"
+    Else
+        MsgBox "執行錯誤" & vbCrLf & "代碼：" & errorCode & vbCrLf & "執行程式：" & strCMD
+        Exit Function
+    End If
+    Exit Function
+    
+ErrZone:
+    MsgBox "WScript.Shell發生錯誤：" & vbCrLf & Err.Number & ":" & Err.Description
+Resume Next
+
+End Function
+
+這個子程式是透過WScript.Shell來達成目的，可以指定程式執行時，視窗是否顯示，以及是否等待完成，
+這兩個部用在使用命令列模式的程式而言，是非常方便的
+
+例如使用VBA來呼叫OpenSSL來產生金鑰，為了讓user不感到干擾以及能夠正常銜接程式，
+通常都會使用不顯示視窗，以及等待返回，當外部程式執行時，將狀態列變更為執行中，
+結束後返回VBA程式，繼續處理資料，最後完成後狀態回歸成「就緒」，表示已處理完。
+
+另外還有可以直接開啟一般檔案，例如圖片檔等，都會像跟我們點滑鼠兩下開啟一樣，
+十分方便，還有可開啟網路連結、開啟e-mail連結等，至於要怎麼樣的應用，就看自己的想像力了！
+
+另外，程式的錯誤回報也分成兩個，一個是WScript.Shell錯誤，
+另一個則是命令列模式的程式，執行後回傳的狀態，是成功、失敗或者是其他錯誤訊。
+
+以下是執行樣本：
+
+Sub Day21()
+
+' 系統內建的呼叫外部程式
+    ' 僅能執行執行檔
+    
+    ' 將第二個引數值設成 1，可讓該程式以正常大小的視窗執行，並且擁有駐點。
+    Dim RetVal
+    RetVal = shell(Environ("windir") & "\system32\CALC.EXE", 1)
+    
+    ' 自製的呼叫外部程式
+    ' 可開啟資料夾、網址、電子郵件地址、圖片檔等
+    ' 就跟滑鼠點開這些檔案相同
+    
+    '開啟 資料夾
+    Debug.Print RunCmd("c:\", False, 1)
+    
+    '開啟 圖片 (路徑或檔名有空白，一定要再加一對雙引號框住路徑)
+    Debug.Print RunCmd("""C:\Users\Public\Pictures\Sample Pictures\Penguins.jpg""", False, 1)
+    
+    '開啟 email位址
+    Debug.Print RunCmd("mailto:test@test.com", False, 1)
+    
+    '開啟 網頁位址
+    Debug.Print RunCmd("http://www.google.com", False, 1)
+    
+    '無此檔案（WScript.Shell錯誤)
+    Debug.Print RunCmd("c:\test.jpg")
+    
+    'CMD裡執行dir (執行正確)
+    Debug.Print RunCmd("cmd /c dir")
+    
+    '無此CMD程式 (命令列執行後的錯誤)
+    Debug.Print RunCmd("cmd /c dirr")
+End Sub
