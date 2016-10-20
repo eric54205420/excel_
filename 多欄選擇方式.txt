@@ -1,0 +1,50 @@
+Sub mult_cols_select ()
+
+	Sheets("Day7").Select
+    
+    '選擇多欄的方式
+    '傳統選擇法，以英文字母選擇多欄
+    Range("A:A,C:C,E:E").Select
+    
+    '若要改為以數字方式選擇多欄，有以下幾種方法
+    
+    Union(Columns(1), Columns(3), Columns(5)).Select
+    
+    Range("A1").Select
+    
+    '隱藏、顯示欄位
+    Union(Columns(1), Columns(3), Columns(5)).EntireColumn.Hidden = True
+    Union(Columns(1), Columns(3), Columns(5)).EntireColumn.Hidden = False
+    
+    
+    '以物件方式處理
+    Dim objCol As Object
+    i = 1
+    '將物件設定多個指定欄位,用此方式的好處,是可以用變數方式帶入
+    '較有彈性
+    Set objCol = Union(Columns(i), Columns(i + 2), Columns(i + 4))
+
+    objCol.Select
+    Range("A1").Select
+    
+    '除了選擇欄位外，比較常用的還有隱藏欄位
+    objCol.EntireColumn.Hidden = True
+    objCol.EntireColumn.Hidden = False
+    
+    
+    '選擇區域範圍
+    '傳統選擇法，以英文字母選擇多欄
+    Range("A:K").Select
+    
+    '以數字方式選擇
+    Range(Columns(1), Columns(10)).Select
+    
+    
+    '以Resize配合英文字母或數字的選擇方式
+    Columns("A").Resize(, 11).Select
+    Columns(1).Resize(, 12).Select
+    
+    '以Range配合Cells方式來選擇
+    Range(Cells(1, 1), Cells(1, 11)).EntireColumn.Select
+    
+End Sub
