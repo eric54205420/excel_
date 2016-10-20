@@ -1,0 +1,108 @@
+Sub DelDups_1()
+    'A欄資料複製到B欄後，排序B欄
+    Sheets("Day9").Select
+    Columns(1).Copy
+    Columns(2).PasteSpecial xlPasteAll
+    Columns(2).Sort key1:=Range("B1")
+    
+    '設定B1為現在的儲存格位置
+    Set currentCell = Range("B1")
+    
+    '使用do..loop迴圈檢測現在的儲存格位置是否為空值
+    '空值就停止，不是空值就跟下個儲存格對照
+    '若是相同值，則刪除現在的除存格
+    '最後再將現在儲存格設定為下個儲存格，以便繼續對照
+    Do While Not IsEmpty(currentCell)
+        Set nextCell = currentCell.Offset(1, 0)
+        If nextCell.Value = currentCell.Value Then
+            currentCell.Delete xlShiftUp
+        End If
+        Set currentCell = nextCell
+    Loop
+
+End Sub
+
+
+' 範例 1：刪除單一清單中的重複項目
+' 下列範例巨集會搜尋 A1:A100 範圍中的單一清單，並刪除清單中所有重複的項目。
+' 此巨集要求清單範圍中不能有空白的資料格。
+' 如果您的清單有包含空白資料格，請依遞增順序將資料排序，讓空白資料格都位於清單的最後面。
+
+
+Sub DelDups_OneList()
+
+Dim iListCount As Integer
+Dim iCtr As Integer
+
+' Turn off screen updating to speed up macro.
+
+Application.ScreenUpdating = False
+
+' Get count of records to search through.
+
+iListCount = Sheets("Sheet1").Range("A1:A100").Rows.Count
+Sheets("Sheet1").Range("A1").Select
+
+' Loop until end of records.
+
+Do Until ActiveCell = ""
+   ' Loop through records.
+   For iCtr = 1 To iListCount
+      ' Don't compare against yourself.
+      ' To specify a different column, change 1 to the column number.
+      If ActiveCell.Row <> Sheets("Sheet1").Cells(iCtr, 1).Row Then
+         ' Do comparison of next record.
+         If ActiveCell.Value = Sheets("Sheet1").Cells(iCtr, 1).Value Then
+            ' If match is true then delete row.
+            Sheets("Sheet1").Cells(iCtr, 1).Delete xlShiftUp
+               ' Increment counter to account for deleted row.
+               iCtr = iCtr + 1
+         End If
+      End If
+   Next iCtr
+   ' Go to next record.
+   ActiveCell.Offset(1, 0).Select
+Loop
+
+Application.ScreenUpdating = True
+
+MsgBox "Done!"
+
+End Sub
+
+' 範例 2：比較兩份清單，並刪除重複的項目
+' 下列範例巨集會比較第一份 (主要) 清單和第二份清單，並刪除第二份清單中與主要清單中重複的項目。
+' 第一份清單位於 Sheet1 上的範圍 A1:A10。
+' 第二份清單位於 Sheet2 上的範圍 A1:A100。
+' 若要使用巨集，請選取任一個工作表，再執行巨集。
+
+
+Sub DelDups_TwoLists()
+
+Dim iListCount As Integer
+Dim iCtr As Integer
+
+' Turn off screen updating to speed up macro.
+Application.ScreenUpdating = False
+
+' Get count of records to search through (list that will be deleted).
+iListCount = Sheets("sheet2").Range("A1:A100").Rows.Count
+
+' Loop through the "master" list.
+For Each x In Sheets("Sheet1").Range("A1:A10")
+   ' Loop through all records in the second list.
+   For iCtr = 1 To iListCount
+      ' Do comparison of next record.
+      ' To specify a different column, change 1 to the column number.
+      If x.Value = Sheets("Sheet2").Cells(iCtr, 1).Value Then
+         ' If match is true then delete row.
+         Sheets("Sheet2").Cells(iCtr, 1).Delete xlShiftUp
+         ' Increment counter to account for deleted row.
+         iCtr = iCtr + 1
+      End If
+   Next iCtr
+Next
+Application.ScreenUpdating = True
+MsgBox "Done!"
+End Sub
+				
