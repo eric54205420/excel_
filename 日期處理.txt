@@ -1,0 +1,113 @@
+關於日期的處理，我整理了幾個要點，希望大家使用前先看一下，
+避免浪費時間在debug與try and error。
+
+我用以下三個程式來介紹
+
+一、日期、時間的顯示
+
+Sub Day20_1()
+    '使用Format方法來取得日期、時間的相關數據
+    
+    dateNow = Now
+    Debug.Print dateNow
+    Debug.Print
+    Debug.Print "標準日期：" & Format(dateNow, "ddddd")
+    Debug.Print "長日期：" & Format(dateNow, "dddddd")
+    Debug.Print "4碼年份：" & Format(dateNow, "yyyy")
+    Debug.Print "2碼年份：" & Format(dateNow, "yy")
+    Debug.Print "2碼月份：" & Format(dateNow, "mm")
+    Debug.Print "1碼月份：" & Format(dateNow, "m")
+    Debug.Print "月份(英文)：" & Format(dateNow, "mmmm")
+    Debug.Print "短月份(英文)：" & Format(dateNow, "mmm")
+    Debug.Print "2碼日期：" & Format(dateNow, "dd")
+    Debug.Print "1碼日期：" & Format(dateNow, "d")
+    Debug.Print "星期：" & Format(dateNow, "aaaa")
+    Debug.Print "短星期：" & Format(dateNow, "aaa")  '2003無作用，僅於儲存格格式作用
+    Debug.Print "星期(英文)：" & Format(dateNow, "dddd")
+    Debug.Print "短星期(英文)：" & Format(dateNow, "ddd")
+    Debug.Print "本週第幾天：" & Format(dateNow, "w")
+    Debug.Print "當年的第幾週：" & Format(dateNow, "ww")
+    Debug.Print "當年的第幾季：" & Format(dateNow, "q")
+    Debug.Print
+        
+    Debug.Print "完整時間：" & Format(dateNow, "ttttt")
+    Debug.Print "2碼時" & Format(dateNow, "hh")
+    Debug.Print "1碼時" & Format(dateNow, "h")
+    Debug.Print "2碼分" & Format(dateNow, "nn")
+    Debug.Print "1碼分" & Format(dateNow, "n")
+    Debug.Print "2碼秒" & Format(dateNow, "ss")
+    Debug.Print "1碼秒" & Format(dateNow, "s")
+    Debug.Print "AM/PM：" & Format(dateNow, "AM/PM")
+    Debug.Print "A/P：" & Format(dateNow, "A/P")
+    Debug.Print "24小時制：" & Format(dateNow, "hh:mm:ss")
+    Debug.Print "12小時制：" & Format(dateNow, "hh:mm:ss AM/PM")
+
+    Debug.Print "當月有幾日"
+
+End Sub
+
+執行結果：
+
+二、取得該月有幾天
+
+Sub Day20_2()
+    
+    '取得該月有幾天
+    '方式一
+    st = Year(Date) - 1
+    st = st & "-12-31"
+    m = Month(Date)
+    d = DateAdd("m", m, DateValue(st))
+    d = Day(d)
+    Debug.Print "方法1：" & m & "月份最後一日是：" & d
+
+    '方式二
+    Debug.Print "方法2：" & Month(Date) & "月份最後一日是：" &  _ 
+    Day(DateAdd("m", 1, (Format(Date, "yyyy/m/") & 1)) - 1)
+
+End Sub
+
+執行結果：
+
+三、關於日期的搜尋
+
+Sub Day20_3()
+    
+    '關於日期資料的搜尋方式
+    '如果搜尋的變數為日期變數，沒問題
+    '如果搜尋的變數為文字變數，須套用DateValue函數才行
+
+    Dim dateTarget As Date
+    Dim strTarget As String
+    
+    dateTarget = "2014/1/4"  '日期格式的日期資料
+    strTarget = "2014/1/4"   '文字格式的日期資料
+    
+    On Error GoTo ErrZona
+    Debug.Print
+    Debug.Print "字串/一般：" & Worksheets("Day20").Cells.Find(strTarget).Row
+    Debug.Print "字串/使用What:方式：" & Worksheets("Day20").Cells.Find(What:=strTarget).Row
+    Debug.Print "字串/使用DateValue方式：" & Worksheets("Day20").Cells.Find(DateValue(strTarget)).Row
+    Debug.Print
+    Debug.Print "日期/一般：" & Worksheets("Day20").Cells.Find(dateTarget).Row
+    Debug.Print "日期/使用What:方式：" & Worksheets("Day20").Cells.Find(What:=dateTarget).Row
+    Debug.Print "日期/使用DateValue方式：" & Worksheets("Day20").Cells.Find(DateValue(dateTarget)).Row
+
+    
+    Exit Sub
+
+ErrZona:
+    Debug.Print Err.Number & ": " & Err.Description
+    Resume Next
+End Sub 
+
+資料表：
+
+執行結果：
+
+要點一，將有助於建構以日期為基礎的檔案名稱資料，或者便於分類。
+
+要點二 當月總天數，有便於計算與天數有關的程式。
+
+第三點 工作表搜尋，若要收尋工作表為「日期」的資料，變數也一定得是日期，
+否則需要用DateValue，不然資料是找不到的。
