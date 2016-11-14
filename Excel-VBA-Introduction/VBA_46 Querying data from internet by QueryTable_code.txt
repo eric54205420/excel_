@@ -1,0 +1,137 @@
+'
+'Code for VBA_46 Querying data from internet by QueryTable
+
+Sub ImportWiseOwlCourses()
+
+    
+'    假設 資料要放在 sheet1 ,Service Name 為 Ser_1 ,帳號: test ,密碼: 2007a ,語法如下:
+'
+'    Sheets("sheet1").QueryTables(1).Connection = "ODBC;DSN=Ser_1;UID=test;PWD=2007a"  '資料庫連線參數
+'    Selection.QueryTable.Refresh BackgroundQuery:=False  '更新資料
+
+    Dim ws As Worksheet
+    Dim qt As QueryTable
+    Dim URL As String
+
+    URL = "http://www.wiseowl.co.uk/courses"
+
+    Set ws = Worksheets.Add
+    
+    Set qt = ws.QueryTables.Add( _
+        Connection:="URL;" & URL, _
+        Destination:=Range("A1"))
+
+    With qt
+        .RefreshOnFileOpen = True
+        .Name = "WOLCourses"
+        '.WebFormatting = xlWebFormattingAll
+        .WebFormatting = xlWebFormattingRTF
+        '.WebSelectionType = xlEntirePage
+        .WebSelectionType = xlSpecifiedTables
+        .WebTables = "1,3"
+        .Refresh
+    End With
+    
+
+End Sub
+
+
+
+
+Sub ImportWiseOwlCoursesWithLoop()
+    
+    Dim ws As Worksheet
+    Dim qt As QueryTable
+    Dim URL As String
+    Dim i As Integer
+    
+
+    URL = "http://www.wiseowl.co.uk/courses"
+
+
+    For i = 1 To 3
+    
+        Set ws = Worksheets.Add
+        
+        Set qt = ws.QueryTables.Add( _
+            Connection:="URL;" & URL, _
+            Destination:=Range("A1"))
+    
+        With qt
+            .RefreshOnFileOpen = True
+            .Name = "WOLCourses"
+            '.WebFormatting = xlWebFormattingAll
+            .WebFormatting = xlWebFormattingRTF
+            '.WebSelectionType = xlEntirePage
+            .WebSelectionType = xlSpecifiedTables
+            .WebTables = i
+            .Refresh
+        End With
+    Next i
+        
+End Sub
+
+Sub ImportXRates()
+
+    Dim ws As Worksheet
+    Dim qt As QueryTable
+    Dim URL As String
+
+    URL = "http://www.x-rates.com/table/?from=USD&amount=1"
+
+    Set ws = Worksheets.Add
+    
+    Set qt = ws.QueryTables.Add( _
+        Connection:="URL;" & URL, _
+        Destination:=Range("A5"))
+
+    With qt
+        .RefreshOnFileOpen = True
+        .Name = "XRates"
+        '.WebFormatting = xlWebFormattingAll
+        .WebFormatting = xlWebFormattingRTF
+        '.WebSelectionType = xlEntirePage
+        .WebSelectionType = xlSpecifiedTables
+        .WebTables = "1"
+        .Refresh
+    End With
+    
+
+End Sub
+
+Sub UpdateXRates()
+
+    Dim qt As QueryTable
+    Dim URL As String
+    
+    If wsRates.Range("B1").Value = "" Then
+        MsgBox "You must choose a currency!", vbExclamation
+        Exit Sub
+    End If
+    
+    If Not IsNumeric(wsRates.Range("B2").Value) Or wsRates.Range("B2").Value = "" Then
+        MsgBox "The amount must be a resonable number!", vbExclamation
+        Exit Sub
+    End If
+    
+    If wsRates.Range("B2").Value < 0 Or wsRates.Range("B2").Value > 100 Then
+        MsgBox "The amount is too low or too high!", vbExclamation
+        Exit Sub
+    End If
+
+    URL = "http://www.x-rates.com/table/?from=" & _
+                wsRates.Range("B1") & _
+                "&  amount=" & wsRates.Range("B2")
+                
+    Set qt = wsRates.QueryTables("XRates")
+
+    With qt
+        .Connection = "URL;" & URL
+        .Refresh
+    End With
+    
+
+End Sub
+
+
+
