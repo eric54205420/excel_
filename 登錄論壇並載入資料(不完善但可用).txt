@@ -1,0 +1,31 @@
+Sub GrabDataFromInternetWithPassWd_Username()
+    'On Error Resume Next
+    With CreateObject("internetexplorer.application")
+        .Visible = True
+        .Navigate "http://oursogo.com/member.php?mod=logging&action=login&referer="                 '"Where yuo want to go"
+        Do Until .ReadyState = 4
+            DoEvents
+        Loop
+
+            .document.getElementsByName("username")(0).Value = "eric5420"                           '"Username here"
+            .document.All("password").Value = "54205420"                                            '"Password here"
+            .document.getElementsByTagName("button")(0).Click
+
+        While .ReadyState <> 4 Or .Busy
+            DoEvents
+        Wend
+        
+        t1 = Timer
+        Do Until Timer > t1 + 30                                                                    '等待30秒
+            DoEvents
+        Loop
+        
+        Set r = .document.All.tags("table")(1).Rows                                                  'wahtever you want
+        n = Range("a65536").End(xlUp).Row
+        For i = 0 To r.Length
+            For j = 0 To r(i).Cells.Length
+                Cells(i + 1, j + 1) = r(i).Cells(j).innerText
+            Next j
+        Next i
+    End With
+End Sub
