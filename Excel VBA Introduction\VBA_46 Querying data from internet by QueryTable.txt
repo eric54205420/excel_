@@ -1,0 +1,15 @@
+VBA_46 Querying data from internet by QueryTable
+
+==========================================
+
+Querying Web Pages
+	Using Excel's Web Query Tool
+	Creating a Query Table in VBA
+	Setting Refresh Options
+	Importing Entire Pages, All Tables and Specific Tables
+	Reading Basic HTML
+	Using URL Query Strings
+
+======================================
+
+Excel's Web Query Tool	
