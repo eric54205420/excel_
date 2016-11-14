@@ -1,0 +1,31 @@
+Pixel to Point ratio 
+
+' http://www.vbaexpress.com/forum/showthread.php?21896-Pixel-to-Point-ratio
+
+Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long 
+Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc As Long) As Long 
+Private Declare Function GetDeviceCaps Lib "gdi32" (ByVal hdc As Long, ByVal nIndex As Long) As Long 
+ 
+Private Const LOGPIXELSX As Long = 88 
+Private Const LOGPIXELSY As Long = 90 
+ 
+Sub Example() 
+    Dim hdc As Long 
+    Dim PixPerInchX As Long 
+    Dim PixPerInchY As Long 
+    Dim PixPerPtX As Double 
+    Dim PixPerPtY As Double 
+     
+    hdc = GetDC(0) 
+     
+    PixPerInchX = GetDeviceCaps(hdc, LOGPIXELSX) 
+    PixPerInchY = GetDeviceCaps(hdc, LOGPIXELSY) 
+     
+     'there are 72 points per inch
+    PixPerPtX = PixPerInchX / 72 
+    PixPerPtY = PixPerInchY / 72 
+     
+    Debug.Print "PixPerPtX:  " & PixPerPtX, "PixPerPtY:  " & PixPerPtY 
+     
+    ReleaseDC 0, hdc 
+End Sub 
