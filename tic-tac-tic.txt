@@ -1,0 +1,97 @@
+'
+' assume that you had already had a named range: [game_area] = "$A1:$C3"
+'                                   named range: [Left_Dia] ="$A1, $B2, $C3"
+'                                   named range: [Right_Dia] = "$C1, $B2, $A3"
+'
+
+Public counter As Integer
+
+' If not select the game_area , goto the game_area
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+ If Application.Intersect(Target, [game_area]) Is Nothing Then
+    'MsgBox "Just not in the game area!"
+    [game_area].Select
+ End If
+End Sub
+' players insert "O" or "X" by order,
+' If there is a winner, reset the game
+Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean)
+ If Application.Intersect(Target, [game_area]) Is Nothing Then
+        Exit Sub
+    Else
+    
+        If Not IsEmpty(Target) Then
+            MsgBox "Can not fill this cell, pls chose some where else"
+            Cancel = True
+            Exit Sub
+        End If
+        
+        If counter Mod 2 = 0 Then
+            Target = "O"
+            counter = counter + 1
+        Else
+            Target = "X"
+              counter = counter + 1
+        End If
+    End If
+    
+    check_result
+     'Application.SendKeys "%{ENTER}"
+     Cancel = True
+End Sub
+' clear the contents of game_area
+ Sub reset_the_game()
+    [game_area].ClearContents
+End Sub
+
+' ckeck whether there are three "O" / "X"
+' in a row / column or diaganal
+Sub check_result()
+
+    Dim current_value As String
+    Dim cur_row As Range
+    Dim cur_col As Range
+    Dim temp As Range
+    Dim row_count As Integer
+    Dim col_count As Integer
+    Dim result As Integer
+    
+    Set cur_row = Application.Intersect(ActiveCell.EntireRow, [game_area])
+    Set cur_col = Application.Intersect(ActiveCell.EntireColumn, [game_area])
+    'Set lef_dia = Application.Intersect([game_area], [Left_Dia])
+    'Set rig_dia = Application.Intersect([game_area], [Right_dia])
+    
+    For Each temp In [Left_Dia]
+        If Not IsEmpty(ActiveCell) And ActiveCell.Value = temp.Value Then
+            row_count = row_count + 1
+        End If
+    Next
+    
+    For Each temp In [Right_dia]
+        If Not IsEmpty(ActiveCell) And ActiveCell.Value = temp.Value Then
+            col_count = col_count + 1
+        End If
+    Next
+     
+     With Application.WorksheetFunction
+        
+       ' MsgBox .CountIf(Left_Dia, ActiveCell)
+      '  MsgBox .CountIf(lef_dia, ActiveCell)
+        
+       result = .Max(.CountIf(cur_row, ActiveCell), .CountIf(cur_col, ActiveCell), _
+                                row_count, col_count)
+        'MsgBox .CountIf([Right_Dia], ActiveCell)
+        'MsgBox cur_row.Address
+        'MsgBox cur_col.Address
+        End With
+        
+        If result > 2 Then
+            MsgBox "The winner is " & ActiveCell.Value
+            reset_the_game
+        End If
+        
+    
+End Sub
+
+
+
