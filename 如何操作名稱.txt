@@ -1,0 +1,8 @@
+'Lf_lat 為該表單上以定義名稱
+Sub handle_point()
+    Dim rng As Range
+    Set rng = [Lf_lat]
+    MsgBox rng.Cells(1, 1).Value
+    MsgBox rng.Cells(1, 2).Value
+    MsgBox rng.Cells(1, 3).Value
+End Sub
