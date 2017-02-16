@@ -1,0 +1,11 @@
+Sub tester22(ByRef ref As Range)
+    'Range("a11:c11").FormulaArray = "{1;2;3}"
+    ref.FormulaArray = "={1,2,3}"
+End Sub
+
+'注意
+'若以 range為參數
+'則需言明當前是在張表單操作
+Sub tttt()
+    tester22 (ActiveSheet.Range("a11:c11"))
+End Sub
