@@ -1,0 +1,14 @@
+' 使用儲存格做為返回值
+Function get_Lv1() As Range
+    
+    Dim rng As Range
+    Set rng = Intersect(Rows(3), Columns("I:K"))
+    Set get_Lv1 = rng
+
+End Function
+
+Sub test_get_Lv1()
+
+    Range("a19") = deg_to_rad(get_Lv1)
+
+End Sub
