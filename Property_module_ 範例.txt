@@ -1,0 +1,159 @@
+
+' ========== Property module 範例 ========== 
+' 基本上 就是物件
+
+' 以下定義三個物件類型模組
+'	Acls
+'	Bcls
+'	Ccls
+	
+' 其中 Acls ( 以下稱 A 物件 )
+' 有一個屬性是以 Bcls ( 以下稱 B 物件 )
+' 作為屬性值
+
+' 而 B 物件 內也有一個屬性
+' 是以 Ccls 做為屬性值
+' /* ref  如何在 [物件類別模組] 中定義一個屬性及該屬性之屬性http://blog.xuite.net/crdotlin/excel/10897249-%E5%A6%82%E4%BD%95%E5%9C%A8+%5B%E7%89%A9%E4%BB%B6%E9%A1%9E%E5%88%A5%E6%A8%A1%E7%B5%84%5D+%E4%B8%AD%E5%AE%9A%E7%BE%A9%E4%B8%80%E5%80%8B%E5%B1%AC%E6%80%A7%E5%8F%8A%E8%A9%B2%E5%B1%AC%E6%80%A7%E4%B9%8B%E5%B1%AC%E6%80%A7%EF%BC%9F
+' http://www.box.net/shared/08pjvj22nn
+' 
+' =========================================
+
+
+' =========================================
+' 			A 物件定義
+' 記得宣告為 "物件類別模組"
+' =========================================
+
+Option Explicit
+
+Dim aApS As Long            '存放AclsA屬性值
+Dim aBpS As String          '存放AclsB屬性值
+Dim aCpS As Bcls            '存放AclsC屬性值(Bcls物件)
+
+'設定AclsA屬性值
+Property Let AclsA(aIn As Long)
+    aApS = aIn
+End Property
+
+'取得AclsA屬性值
+Property Get AclsA() As Long
+    AclsA = aApS
+End Property
+
+'設定AclsB屬性值
+Property Let AclsB(bIn As String)
+    aBpS = bIn
+End Property
+
+'取得AclsB屬性值
+Property Get AclsB() As String
+    AclsB = aBpS
+End Property
+
+'設定AclsC屬性值(Bcls物件)
+Property Get AclsC() As Bcls
+    Set AclsC = aCpS
+End Property
+
+'設定Bcls物件之引用, 也就是創見一個新的Bcls物件賦予aCpS
+Private Sub Class_Initialize()
+    Set aCpS = New Bcls
+End Sub
+
+' =========================================
+
+' =========================================
+' 			B 物件定義
+' 記得宣告為 "物件類別模組"
+' =========================================
+
+Dim bApS As Long        '存放BclsA屬性值
+Dim bBpS As String      '存放BclsB屬性值
+Dim bCpS As Ccls        '存放BclsC屬性值(Ccls物件)
+ 
+'設定BclsA屬性值
+Property Let BclsA(aIn As Long)
+    bApS = aIn
+End Property
+ 
+'取得BclsA屬性值
+Property Get BclsA() As Long
+    BclsA = bApS
+End Property
+ 
+'設定BclsB屬性值
+Property Let BclsB(bIn As String)
+    bBpS = bIn
+End Property
+ 
+'取得BclsB屬性值
+Property Get BclsB() As String
+    BclsB = bBpS
+End Property
+ 
+'取得BclsC屬性值(Ccls物件)
+Property Get BclsC() As Ccls
+    Set BclsC = bCpS
+End Property
+ 
+'設定Ccls物件之引用, 也就是創見一個新的Ccls物件賦予bCpS
+Private Sub Class_Initialize()
+    Set bCpS = New Ccls
+End Sub
+
+' =========================================
+' 			C 物件定義
+' 記得宣告為 "物件類別模組"
+' =========================================
+
+Dim cApS As Long        '存放CclsA屬性值
+Dim cBpS As String       '存放CclsB屬性值
+ 
+'設定CclsA屬性值
+Property Let CclsA(aIn As Long)
+    cApS = aIn
+End Property
+ 
+'取得CclsA屬性值
+Property Get CclsA() As Long
+    CclsA = cApS
+End Property
+ 
+'設定CclsB屬性值
+Property Let CclsB(bIn As String)
+    cBpS = bIn
+End Property
+ 
+'取得CclsB屬性值
+Property Get CclsB() As String
+    CclsB = cBpS
+End Property
+
+' =========================================
+' 			測試模塊定義
+' 宣告為 "模組"
+' =========================================
+
+Sub test()
+'對於myCls物件
+
+    With myCls
+
+        .AclsA = 5            '賦予AclsA屬性值(數值)
+        .AclsB = "a"          '賦予AclsB屬性值(文字)
+        .AclsC.BclsA = 6    '賦予AclsC屬性(Bcls物件)之屬性BclsA值(數值)
+        .AclsC.BclsB = "b"  '賦予AclsC屬性(Bcls物件)之屬性BclsB值(文字)
+        .AclsC.BclsC.CclsA = 7  	'賦予AclsC屬性(Bcls物件)之BclsC屬性(Ccls物件)CclsA值(數值)
+        .AclsC.BclsC.CclsB = "c"  '賦予AclsC屬性(Bcls物件)之BclsC屬性(Ccls物件)CclsB值(文字)
+        '驗證
+		
+        MsgBox .AclsA
+        MsgBox .AclsB
+        MsgBox .AclsC.BclsA
+        MsgBox .AclsC.BclsB
+        MsgBox .AclsC.BclsC.CclsA
+        MsgBox .AclsC.BclsC.CclsB
+  
+  End With
+
+End Sub
