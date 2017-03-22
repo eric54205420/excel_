@@ -3,7 +3,9 @@
 
 ##### 好網站 #####
 
-	www.cnhup.com/index.php/archives/		' 算法
+	https://github.com/eviltester/XML-VB-Test-Data-Generator/tree/master/vb6_src 	'	
+ 良好的模塊擴充 
+ 	www.cnhup.com/index.php/archives/		' 算法
 	http://blog.xuite.net/crdotlin/excel		' VBA 開發常見 進階問題
  	http://club.excelhome.net/forum-2-1.html      	' VBA 開發 函數 圖表 SQL導入 等
   	http://engineers-excel.com/Gallery/Gallery.htm	' engineers-excel animation					excel animation
