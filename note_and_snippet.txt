@@ -1,0 +1,6 @@
+	nice ref
+		https://www.mrexcel.com/forum/excel-questions/	all kinds of help	*****
+
+	code_snippet
+
+		獲得VBA所位在工作簿當前目錄名		ThisWorkbook.Path
