@@ -1,0 +1,113 @@
+Public Sub ActiveWorksheet_to_Table()
+
+    
+    Application.ScreenUpdating = False
+    
+    Dim loSheet As Worksheet
+    Dim lnSerialNumber As Long
+    Dim lcText As String
+    Dim lcTextValue As String
+    Dim loCell As Range
+    Dim ldDate, ltTime, luValue As Variant
+    Dim lcValue As String
+
+    lnSerialNumber = 0
+    
+    Open "C:\Users\Administrator\Desktop\cell_meta_data.csv" For Output As #1
+
+    ' Write table fields
+    Write #1, _
+    "SerialNumber", _
+    "Address", _
+    "DataType", _
+    "TextContent", _
+    "Data_in_text_content", _
+    "Number", _
+    "Date", _
+    "Time", _
+    "Column_No.", _
+    "Row_No.", _
+    "Front_name", _
+    "Front_size", _
+    "Front_color", _
+    "Range_color", _
+    "Sheet_name", _
+    "Workbook_name", _
+    "Document_fullname", _
+    ""
+    
+    Set loSheet = Application.ActiveWorkbook.ActiveSheet
+    
+    If loSheet.Type = -4167 Then
+        
+        loSheet.Activate
+        
+        For Each loCell In loSheet.UsedRange.Cells
+        
+            With loCell
+            
+                lcTextValue = Trim(.Text)
+                lcText = "'" + lcTextValue
+                
+                luValue = .Value
+                
+                lnSerialNumber = lnSerialNumber + 1
+                
+                ldDate = ""
+                ltTime = ""
+                lcValue = ""
+                
+                
+                If IsDate(lcTextValue) And Not IsNumeric(lcTextValue) Then
+                    
+                    ldDate = CStr(DateValue(lcTextValue))
+                    ltTime = Replace(Replace(DateValue(lcTextValue) & TimeValue(lcTextValue), _
+                        "上午", ""), "下午", "")
+                
+                End If
+                
+                Write #1, _
+                lnSerialNumber, _
+                .Address, _
+                VarType(loCell), _
+                lcText, _
+                Len(lcTextValue), _
+                lcValue, _
+                ldDate, _
+                ltTime, _
+                .Column, _
+                .Row, _
+                .Font.Name, _
+                .Font.Size, _
+                .Font.ColorIndex, _
+                .Interior.ColorIndex, _
+                loSheet.Name, _
+                loSheet.Parent.Name, _
+                loSheet.Parent.FullName
+                
+            
+            End With
+        
+        Next
+
+    End If
+    
+
+    Close #1
+    
+    If Dir("C:\Users\Administrator\Desktop\cell_meta_data.xlsx") <> "" Then
+        
+        Kill "C:\Users\Administrator\Desktop\cell_meta_data.xlsx"
+    
+    End If
+    
+    Workbooks.Open ("C:\Users\Administrator\Desktop\cell_meta_data.csv")
+    ActiveWorkbook.SaveAs "C:\Users\Administrator\Desktop\cell_meta_data", xlOpenXMLWorkbook
+    ActiveWorkbook.Close
+    
+    Kill "C:\Users\Administrator\Desktop\cell_meta_data.csv"
+    
+    
+    Application.ScreenUpdating = True
+    
+End Sub
