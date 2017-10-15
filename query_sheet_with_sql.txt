@@ -1,0 +1,60 @@
+Public Sub get_data_from_table()
+
+    Dim lcConnecString, lcCommandText As String
+    Dim loADODBConnection As Variant
+    Dim loADODBRecordset As Variant
+    Dim lcConnectionString As String
+    Set loADODBConnection = New ADODB.Connection
+    Set loADODBRecordset = New ADODB.Recordset
+    
+    ' strDataSrcXlsPath -> the sheet you want to query
+    ' lcCommandText -> any standard sql statements
+    ' this code fit for excel 2007, but other version is uncertain
+    strDataSrcXlsPath = "c:\Users\Administrator\Desktop\cell_meta_data.xlsx"
+    lcConnectionString = "Provider=MSDASQL.1;DSN=Excel Files;DBQ=" & strDataSrcXlsPath & ";HDR=Yes';"
+    lcCommandText = "select * from [cell_meta_data$]"
+    
+
+'    lcConnectionString = "Driver={Microsoft Excel Driver (*.xlsx)};" & _
+                         "DBQ=" & strDataSrcXlsPath & ";" & _
+                         "ReadOnly=True"
+
+                         
+
+
+    loADODBConnection.Open lcConnectionString
+    loADODBRecordset.Open lcCommandText, loADODBConnection, 3, 1, 1
+
+    Sheets.Add
+    
+    Dim r, f As Integer
+    r = 1
+    
+    For f = 0 To loADODBRecordset.Fields.Count - 1
+    
+        Sheets(1).Cells(r, f + 1).Value = loADODBRecordset.Fields(f).Name
+    
+    Next
+    
+    
+    While Not loADODBRecordset.EOF
+    
+        r = r + 1
+        
+        For f = 0 To loADODBRecordset.Fields.Count - 1
+        
+            Sheets(1).Cells(r, f + 1).Value = loADODBRecordset.Fields(f).Value
+        Next
+    
+        loADODBRecordset.MoveNext
+    
+    Wend
+    
+    loADODBConnection.Close
+    
+    Sheets(1).Activate
+    Cells.Rows.AutoFit
+    Cells.Columns.AutoFit
+    Cells(1, 1).Select
+    
+End Sub
